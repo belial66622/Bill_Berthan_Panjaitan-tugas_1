@@ -1,57 +1,43 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.U2D;
 
-public class Enemies2 : MonoBehaviour
+public class Enemies2 : Enemies
 {
-    Vector2  speed;
-    Rigidbody2D rig;
-    public ManagerMusuh mana;
-    // Start is called before the first frame update
-    void Start()
+    private int life =2;
+    public override void FixedUpdate()
     {
-        rig = GetComponent<Rigidbody2D>();
+        base.FixedUpdate();
+        if (this.transform.position.x <= -8 || this.transform.position.x >= 8)
+        {
+            mantul();
+        }
+    }
+
+    public override void gerak(int turun)
+    {
+        speed = new Vector3(10, -0.5f+(turun/4));
         rig.velocity = speed;
-        gerak(mana.level*-1);
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
-    void OnMouseDown()
-    {
-
-        // this object was clicked - do something
-        Debug.Log(mana.level);
-        mana.hancur(gameObject);
-    }
-
-    void gerak(int turun)
-    {
-        speed = new Vector2(10, -0.5f+(turun/4));
-        rig.velocity = speed;
-
     }
 
 
 
     void mantul()
     {
-        speed = new Vector2(speed.x *-1, Random.RandomRange(speed.y,speed.y *2) );
+        speed = new Vector2(speed.x * -1, speed.y);
         rig.velocity = speed;
-        Debug.Log("cobb");
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    public override void onklika(int damage)
     {
-        if (collision.tag =="dinding")
-        mantul();
-        if (collision.tag =="batas")
-            mana.lewat(gameObject);
-
+        life -= 1;
+        if (life == 0)
+            mana.hancur(gameObject);
+        else
+        {
+            gameObject.GetComponent<SpriteRenderer>().color = Color.red; 
+        }
     }
+
 }
